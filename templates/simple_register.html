@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - HackHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; padding: 2rem 0; }
+        .form-container { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center mb-4">Register Your Information</h2>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role *</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="">Select your role...</option>
+                                <option value="Developer">Developer</option>
+                                <option value="Designer">Designer</option>
+                                <option value="Product Manager">Product Manager</option>
+                                <option value="Data Scientist">Data Scientist</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Business">Business</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="experience_level" class="form-label">Experience Level *</label>
+                            <select class="form-select" id="experience_level" name="experience_level" required>
+                                <option value="">Select experience...</option>
+                                <option value="Beginner">Beginner (0-2 years)</option>
+                                <option value="Intermediate">Intermediate (2-5 years)</option>
+                                <option value="Advanced">Advanced (5+ years)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="skills" class="form-label">Skills</label>
+                    <input type="text" class="form-control" id="skills" name="skills" 
+                           placeholder="e.g., Python, React, Design, Marketing">
+                    <div class="form-text">Enter your skills separated by commas</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="interests" class="form-label">Interests</label>
+                    <input type="text" class="form-control" id="interests" name="interests" 
+                           placeholder="e.g., Web Development, AI, Healthcare">
+                    <div class="form-text">What areas interest you?</div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="availability" class="form-label">Availability *</label>
+                            <select class="form-select" id="availability" name="availability" required>
+                                <option value="">Select availability...</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Weekend">Weekend only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="preferred_team_size" class="form-label">Preferred Team Size</label>
+                            <select class="form-select" id="preferred_team_size" name="preferred_team_size">
+                                <option value="2">2 members</option>
+                                <option value="3">3 members</option>
+                                <option value="4" selected>4 members</option>
+                                <option value="5">5 members</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">Register</button>
+                    <a href="/simple_participants" class="btn btn-outline-secondary btn-lg ms-3">View All</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

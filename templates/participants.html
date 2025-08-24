@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Participants - HackHub{% endblock %}
+
+{% block content %}
+<div class="participants-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1><i class="fas fa-users"></i> Registered Participants</h1>
+                    <p class="lead">Meet the talented individuals ready to form amazing teams</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register New Participant
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="participants-stats">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ participants|length }}</h3>
+                            <p>Total Participants</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ participants|selectattr('team_id', 'none')|list|length }}</h3>
+                            <p>Available</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-people-group"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ participants|rejectattr('team_id', 'none')|list|length }}</h3>
+                            <p>In Teams</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ participants|selectattr('role', 'equalto', 'Developer')|list|length }}</h3>
+                            <p>Developers</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="participants-filters">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Filter by Role</label>
+                        <select class="form-select" id="roleFilter">
+                            <option value="">All Roles</option>
+                            <option value="Developer">Developer</option>
+                            <option value="Designer">Designer</option>
+                            <option value="Product Manager">Product Manager</option>
+                            <option value="Data Scientist">Data Scientist</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Business">Business</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Filter by Experience</label>
+                        <select class="form-select" id="experienceFilter">
+                            <option value="">All Levels</option>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Filter by Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">All Participants</option>
+                            <option value="available">Available</option>
+                            <option value="in-team">In Team</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="participants-grid" id="participantsGrid">
+            {% if participants %}
+                <div class="row g-4">
+                    {% for participant in participants %}
+                    <div class="col-lg-6 col-xl-4 participant-item" 
+                         data-role="{{ participant.role }}" 
+                         data-experience="{{ participant.experience_level }}"
+                         data-status="{{ 'in-team' if participant.team_id else 'available' }}">
+                        <div class="participant-card {{ 'in-team' if participant.team_id else 'available' }}">
+                            <div class="participant-header">
+                                <div class="participant-avatar">
+                                    {{ participant.name[0].upper() }}
+                                </div>
+                                <div class="participant-info">
+                                    <h5>{{ participant.name }}</h5>
+                                    <p class="participant-role">{{ participant.role }}</p>
+                                    <div class="participant-status">
+                                        {% if participant.team_id %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check"></i> In Team
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-clock"></i> Available
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="participant-details">
+                                <div class="detail-item">
+                                    <strong>Experience:</strong>
+                                    <span class="experience-{{ participant.experience_level.lower() }}">
+                                        {{ participant.experience_level }}
+                                    </span>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <strong>Availability:</strong>
+                                    {{ participant.availability }}
+                                </div>
+                                
+                                {% if participant.skills %}
+                                <div class="detail-item">
+                                    <strong>Skills:</strong>
+                                    <div class="skills-tags">
+                                        {% for skill in participant.skills[:5] %}
+                                            <span class="skill-tag">{{ skill }}</span>
+                                        {% endfor %}
+                                        {% if participant.skills|length > 5 %}
+                                            <span class="skill-tag more">+{{ participant.skills|length - 5 }} more</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if participant.interests %}
+                                <div class="detail-item">
+                                    <strong>Interests:</strong>
+                                    <div class="interests-tags">
+                                        {% for interest in participant.interests[:3] %}
+                                            <span class="interest-tag">{{ interest }}</span>
+                                        {% endfor %}
+                                        {% if participant.interests|length > 3 %}
+                                            <span class="interest-tag more">+{{ participant.interests|length - 3 }} more</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="participant-links">
+                                {% if participant.github_url %}
+                                    <a href="{{ participant.github_url }}" target="_blank" class="link-btn">
+                                        <i class="fab fa-github"></i>
+                                    </a>
+                                {% endif %}
+                                {% if participant.linkedin_url %}
+                                    <a href="{{ participant.linkedin_url }}" target="_blank" class="link-btn">
+                                        <i class="fab fa-linkedin"></i>
+                                    </a>
+                                {% endif %}
+                                <button class="link-btn" onclick="getAIAdvice('{{ participant.id }}', '{{ participant.name }}')">
+                                    <i class="fas fa-robot"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>No Participants Yet</h3>
+                    <p>Be the first to join HackHub and start building amazing teams!</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Filter functionality
+document.getElementById('roleFilter').addEventListener('change', filterParticipants);
+document.getElementById('experienceFilter').addEventListener('change', filterParticipants);
+document.getElementById('statusFilter').addEventListener('change', filterParticipants);
+
+function filterParticipants() {
+    const roleFilter = document.getElementById('roleFilter').value;
+    const experienceFilter = document.getElementById('experienceFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const participants = document.querySelectorAll('.participant-item');
+    
+    participants.forEach(participant => {
+        let show = true;
+        
+        if (roleFilter && participant.dataset.role !== roleFilter) {
+            show = false;
+        }
+        
+        if (experienceFilter && participant.dataset.experience !== experienceFilter) {
+            show = false;
+        }
+        
+        if (statusFilter && participant.dataset.status !== statusFilter) {
+            show = false;
+        }
+        
+        participant.style.display = show ? 'block' : 'none';
+    });
+}
+
+function getAIAdvice(participantId, participantName) {
+    // Get AI advice for this participant
+    const message = `Can you give me team formation advice for ${participantName}? What kind of teammates would complement their skills best?`;
+    
+    // Trigger AI chat with context
+    window.sendAIMessage(message, {
+        type: 'participant_advice',
+        participant_id: participantId,
+        participant_name: participantName
+    });
+}
+</script>
+{% endblock %}

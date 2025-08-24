@@ -1,0 +1,688 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section animated-bg">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content scroll-reveal">
+                    <h1 class="hero-title">
+                        Build Amazing
+                        <span class="gradient-text gradient-text-animated text-glow">Hackathon Teams</span>
+                        with AI
+                    </h1>
+                    <p class="hero-description scroll-reveal">
+                        HackHub uses intelligent algorithms to match participants based on skills, experience, and interests. Create perfectly balanced teams for your next hackathon adventure.
+                    </p>
+                    
+                    <div class="hero-stats scroll-reveal">
+                        <div class="stat-item stagger-child floating-element">
+                            <div class="stat-number pulsing-element">{{ participant_count }}</div>
+                            <div class="stat-label">Participants</div>
+                        </div>
+                        <div class="stat-item stagger-child floating-element">
+                            <div class="stat-number pulsing-element">{{ developer_count }}</div>
+                            <div class="stat-label">Developers</div>
+                        </div>
+                        <div class="stat-item stagger-child floating-element">
+                            <div class="stat-number pulsing-element">{{ designer_count }}</div>
+                            <div class="stat-label">Designers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-actions scroll-reveal">
+                        <a href="{{ url_for('simple_register') }}" class="btn btn-primary btn-lg btn-magnetic hover-glow">
+                            <i class="fas fa-user-plus"></i> Register Now
+                        </a>
+                        <a href="{{ url_for('simple_participants') }}" class="btn btn-outline-light btn-lg btn-magnetic hover-lift">
+                            <i class="fas fa-users"></i> View Participants
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image scroll-reveal">
+                    <img src="{{ url_for('static', filename='hackathon-logo.png') }}" alt="Hackathon participants working together" class="img-fluid rounded-4 shadow-lg floating-element hover-lift">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section animated-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title scroll-reveal gradient-text-animated">Intelligent Team Matching</h2>
+                <p class="section-subtitle scroll-reveal">Advanced algorithms create perfect team chemistry</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card scroll-reveal stagger-child card-3d hover-glow">
+                    <div class="feature-icon rotating-element">
+                        <i class="fas fa-brain interactive-icon"></i>
+                    </div>
+                    <h4>AI-Powered Matching</h4>
+                    <p>Smart algorithms analyze skills, experience, and interests to create optimal team compositions.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card scroll-reveal stagger-child card-3d hover-glow">
+                    <div class="feature-icon pulsing-element">
+                        <i class="fas fa-balance-scale interactive-icon"></i>
+                    </div>
+                    <h4>Balanced Teams</h4>
+                    <p>Ensure diverse skill sets and experience levels in every team for maximum potential.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card scroll-reveal stagger-child card-3d hover-glow">
+                    <div class="feature-icon floating-element">
+                        <i class="fas fa-chart-line interactive-icon"></i>
+                    </div>
+                    <h4>Data Insights</h4>
+                    <p>Visualize team compositions, skill distributions, and performance metrics.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card scroll-reveal stagger-child card-3d hover-glow">
+                    <div class="feature-icon pulsing-element">
+                        <i class="fas fa-robot interactive-icon"></i>
+                    </div>
+                    <h4>AI Assistant</h4>
+                    <p>Get personalized advice on team formation and project ideas from our AI assistant.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="dashboard-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title text-center mb-5">Team Analytics Dashboard</h2>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-users"></i> Role Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="roleChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="analytics-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-star"></i> Experience Levels</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="experienceChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary btn-lg" id="generateTeamsBtn" onclick="generateTeams()">
+                    <i class="fas fa-magic"></i> Generate Teams
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hackathon Platforms Section -->
+<div class="hackathon-platforms-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title">🚀 Popular Hackathon Platforms</h2>
+                <p class="section-subtitle">Discover and participate in hackathons from top organizing platforms worldwide</p>
+            </div>
+        </div>
+        
+        <!-- Primary Platforms -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="platform-category-title">Major Platforms</h3>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fab fa-dev" style="color: #0A0A23;"></i>
+                    </div>
+                    <h5>Devpost</h5>
+                    <p>The world's largest platform for hackathons and developer competitions</p>
+                    <a href="https://devpost.com/hackathons" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-code" style="color: #2C3E50;"></i>
+                    </div>
+                    <h5>HackerEarth</h5>
+                    <p>Technical challenges and hackathons for developers and enterprises</p>
+                    <a href="https://www.hackerearth.com/challenges/hackathon/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-graduation-cap" style="color: #6C5CE7;"></i>
+                    </div>
+                    <h5>Devfolio</h5>
+                    <p>Student-focused hackathons with comprehensive organizer tools</p>
+                    <a href="https://devfolio.co/hackathons" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-trophy" style="color: #FF6B6B;"></i>
+                    </div>
+                    <h5>Unstop</h5>
+                    <p>Multi-disciplinary competitions including coding, business, and creative challenges</p>
+                    <a href="https://unstop.com/hackathons" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-university" style="color: #00B894;"></i>
+                    </div>
+                    <h5>Major League Hacking</h5>
+                    <p>Official collegiate hackathon league for student developers worldwide</p>
+                    <a href="https://mlh.io/seasons/2025/events" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-globe" style="color: #A29BFE;"></i>
+                    </div>
+                    <h5>AngelHack</h5>
+                    <p>Global hackathon community connecting developers, designers, and entrepreneurs</p>
+                    <a href="https://angelhack.com/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specialized Platforms -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="platform-category-title">Specialized Platforms</h3>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fab fa-bitcoin" style="color: #FDCB6E;"></i>
+                    </div>
+                    <h5>DoraHacks</h5>
+                    <p>Web3 and blockchain hackathons with bounty systems</p>
+                    <a href="https://dorahacks.io/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-rocket" style="color: #E84393;"></i>
+                    </div>
+                    <h5>Taikai</h5>
+                    <p>Innovation challenges and Web3 development competitions</p>
+                    <a href="https://taikai.network/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-lightbulb" style="color: #00CEC9;"></i>
+                    </div>
+                    <h5>Agorize</h5>
+                    <p>Open innovation platform for corporate hackathons and challenges</p>
+                    <a href="https://www.agorize.com/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-users" style="color: #FD79A8;"></i>
+                    </div>
+                    <h5>Hack Club</h5>
+                    <p>Student-run coding community and hackathon organizer</p>
+                    <a href="https://hackclub.com/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-map-pin" style="color: #74B9FF;"></i>
+                    </div>
+                    <h5>Junction</h5>
+                    <p>Europe's leading hackathon organizing platform</p>
+                    <a href="https://hackjunction.com/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-cogs" style="color: #636E72;"></i>
+                    </div>
+                    <h5>Hackathon.com</h5>
+                    <p>Corporate hackathon platform for enterprise innovation</p>
+                    <a href="https://hackathon.com/" target="_blank" class="btn btn-primary btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Visit Platform
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Resources -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="platform-category-title">Additional Resources</h3>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-calendar" style="color: #00B894;"></i>
+                    </div>
+                    <div class="resource-content">
+                        <h5>Eventornado</h5>
+                        <p>Hackathon event management and organization software</p>
+                        <a href="https://eventornado.com/" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt"></i> Visit Website
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-search" style="color: #E17055;"></i>
+                    </div>
+                    <div class="resource-content">
+                        <h5>HackList</h5>
+                        <p>Curated list of upcoming hackathons from around the world</p>
+                        <a href="https://www.hacklist.org/" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt"></i> Visit Website
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2>Ready to Build Your Dream Team?</h2>
+                <p class="lead">Join thousands of developers, designers, and innovators who trust HackHub for intelligent team formation.</p>
+                <div class="cta-images">
+                    <img src="https://pixabay.com/get/g8b251b50a5023e6434becb7545be92bf534131923b321accb545948f575d57c6db4c4ad6915a5d79cf0e6d9763f23d6d44a9b33dc07d6bca73fabd0109ecc097_1280.jpg" 
+                         alt="Diverse tech team" class="cta-img rounded-3">
+                    <img src="https://pixabay.com/get/g6348fcff2b79d927fee27ca16ee2a20bf73e43a1754884b1b42761beaff7cd51043b38c39ab33c817cb2c521e15697d9d537212556c76222ce3a4929a605f571_1280.jpg" 
+                         alt="Collaborative coding" class="cta-img rounded-3">
+                </div>
+                <a href="{{ url_for('simple_register') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-rocket"></i> Get Started Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    // Load dashboard charts
+    loadDashboardCharts();
+    
+    
+    
+    
+    
+    
+</script>
+
+<style>
+/* Hackathon Platforms Section */
+.hackathon-platforms-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 80px 0;
+    color: white;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 3rem;
+}
+
+.platform-category-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: white;
+}
+
+.platform-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.platform-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 1);
+}
+
+.platform-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+.platform-card h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.platform-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.resource-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 1);
+}
+
+.resource-icon {
+    font-size: 2.5rem;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.resource-content h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.resource-content p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hackathon-platforms-section {
+        padding: 60px 0;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .platform-category-title {
+        font-size: 1.5rem;
+    }
+    
+    .platform-card {
+        padding: 1.5rem;
+    }
+    
+    .resource-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .resource-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Chat Interface Styles */
+.chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.chat-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+}
+
+.chat-interface {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.chat-interface.active {
+    display: flex;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h5 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.chat-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.message {
+    margin-bottom: 15px;
+}
+
+.message-content {
+    padding: 12px 16px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.bot-message .message-content {
+    background: #e9ecef;
+    color: #333;
+}
+
+.user-message .message-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-left: auto;
+}
+
+.chat-input {
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.chat-input input {
+    flex: 1;
+    border: 1px solid #dee2e6;
+    border-radius: 25px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 14px;
+}
+
+.chat-input input:focus {
+    border-color: #667eea;
+}
+
+.chat-input button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.chat-input button:hover {
+    transform: scale(1.1);
+}
+
+.typing-indicator {
+    padding: 12px 16px;
+    background: #e9ecef;
+    border-radius: 18px;
+    max-width: 80%;
+    color: #666;
+    font-style: italic;
+}
+</style>
+{% endblock %}
+
+<!-- AI Chat Interface -->
+<div class="chat-toggle">
+    <i class="fas fa-comment"></i>
+</div>
+
+<div class="chat-interface" id="chatContainer">
+    <div class="chat-header">
+        <h5><i class="fas fa-robot"></i> AI Assistant</h5>
+        <button class="chat-close">&times;</button>
+    </div>
+    <div class="chat-messages" id="aiMessages">
+        <div class="message bot-message">
+            <div class="message-content">
+                Hello! I'm your AI assistant. I can help with hackathon advice, programming questions, or just about anything else. What would you like to know?
+            </div>
+        </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" id="aiInput" placeholder="Ask me anything..." autocomplete="off">
+        <button id="aiSendButton"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>

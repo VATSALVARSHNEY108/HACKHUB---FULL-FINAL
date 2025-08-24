@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}AI Project Ideas - HackHub{% endblock %}
+
+{% block content %}
+<div class="participants-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1><i class="fas fa-lightbulb"></i> AI-Powered Project Ideas</h1>
+                    <p class="lead">Get customized hackathon project suggestions based on your team's skills and interests</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <button class="btn btn-primary" onclick="generateRandomIdea()">
+                        <i class="fas fa-magic"></i> Random Idea
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Idea Generator Form -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-brain"></i> Customize Your Project Ideas</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="ideaForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Technology Focus</label>
+                                        <select class="form-select" name="technology" id="technology">
+                                            <option value="">Any Technology</option>
+                                            <option value="web">Web Development</option>
+                                            <option value="mobile">Mobile Apps</option>
+                                            <option value="ai">AI/Machine Learning</option>
+                                            <option value="blockchain">Blockchain</option>
+                                            <option value="iot">IoT/Hardware</option>
+                                            <option value="fintech">FinTech</option>
+                                            <option value="health">HealthTech</option>
+                                            <option value="education">EdTech</option>
+                                            <option value="social">Social Impact</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Team Size</label>
+                                        <select class="form-select" name="team_size" id="team_size">
+                                            <option value="">Any Size</option>
+                                            <option value="2">2 members</option>
+                                            <option value="3">3 members</option>
+                                            <option value="4">4 members</option>
+                                            <option value="5">5+ members</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Experience Level</label>
+                                        <select class="form-select" name="experience" id="experience">
+                                            <option value="">Mixed Experience</option>
+                                            <option value="beginner">Beginner Friendly</option>
+                                            <option value="intermediate">Intermediate</option>
+                                            <option value="advanced">Advanced</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Project Duration</label>
+                                        <select class="form-select" name="duration" id="duration">
+                                            <option value="">Standard (48 hours)</option>
+                                            <option value="short">Quick Build (24 hours)</option>
+                                            <option value="weekend">Weekend Project</option>
+                                            <option value="week">Week-long</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Skills & Interests (Optional)</label>
+                                <input type="text" class="form-control" name="skills" id="skills" 
+                                       placeholder="e.g., Python, React, Design, Data Science">
+                                <div class="form-text">Enter skills and interests separated by commas</div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-magic"></i> Generate Ideas
+                                </button>
+                                <div class="mt-2">
+                                    <small class="text-muted">Powered by AI • Get 3-5 personalized project ideas</small>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Generating ideas...</span>
+            </div>
+            <p class="mt-3">AI is generating personalized project ideas for you...</p>
+        </div>
+
+        <!-- Generated Ideas Display -->
+        <div id="generatedIdeas" class="row g-4">
+            <!-- Ideas will be inserted here by JavaScript -->
+        </div>
+        
+        <!-- Default Ideas (shown initially) -->
+        <div id="defaultIdeas" class="row g-4">
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0"><i class="fas fa-leaf"></i> EcoTracker</h6>
+                        <small>Social Impact • Web App</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Track personal carbon footprint with smart recommendations for sustainable living choices.</p>
+                        <div class="mb-2">
+                            <strong>Tech Stack:</strong>
+                            <span class="badge bg-secondary ms-1">React</span>
+                            <span class="badge bg-secondary ms-1">Node.js</span>
+                            <span class="badge bg-secondary ms-1">Chart.js</span>
+                        </div>
+                        <div>
+                            <strong>Team Roles:</strong> Developer, Designer, Data Analyst
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0"><i class="fas fa-brain"></i> AI Study Buddy</h6>
+                        <small>EdTech • AI/ML</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">AI-powered study assistant that creates personalized quizzes and learning paths.</p>
+                        <div class="mb-2">
+                            <strong>Tech Stack:</strong>
+                            <span class="badge bg-secondary ms-1">Python</span>
+                            <span class="badge bg-secondary ms-1">OpenAI API</span>
+                            <span class="badge bg-secondary ms-1">Flask</span>
+                        </div>
+                        <div>
+                            <strong>Team Roles:</strong> AI Developer, Full-stack Developer, UX Designer
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h6 class="mb-0"><i class="fas fa-mobile-alt"></i> LocalConnect</h6>
+                        <small>Social • Mobile App</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Hyperlocal community app connecting neighbors for events, services, and mutual aid.</p>
+                        <div class="mb-2">
+                            <strong>Tech Stack:</strong>
+                            <span class="badge bg-secondary ms-1">React Native</span>
+                            <span class="badge bg-secondary ms-1">Firebase</span>
+                            <span class="badge bg-secondary ms-1">Maps API</span>
+                        </div>
+                        <div>
+                            <strong>Team Roles:</strong> Mobile Developer, Backend Developer, UI/UX Designer
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('ideaForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const generatedIdeas = document.getElementById('generatedIdeas');
+    const defaultIdeas = document.getElementById('defaultIdeas');
+    
+    // Show loading
+    loadingIndicator.style.display = 'block';
+    defaultIdeas.style.display = 'none';
+    generatedIdeas.innerHTML = '';
+    
+    // Gather form data
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/generate-project-ideas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            displayGeneratedIdeas(result.ideas);
+        } else {
+            throw new Error(result.error || 'Failed to generate ideas');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to generate ideas. Please try again.');
+        defaultIdeas.style.display = 'block';
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+});
+
+function displayGeneratedIdeas(ideas) {
+    const container = document.getElementById('generatedIdeas');
+    const defaultIdeas = document.getElementById('defaultIdeas');
+    
+    container.innerHTML = '';
+    
+    ideas.forEach((idea, index) => {
+        const colors = ['primary', 'success', 'info', 'warning', 'secondary'];
+        const color = colors[index % colors.length];
+        
+        const ideaCard = `
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-${color} text-white">
+                        <h6 class="mb-0"><i class="fas fa-lightbulb"></i> ${idea.title}</h6>
+                        <small>${idea.category} • ${idea.difficulty}</small>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">${idea.description}</p>
+                        ${idea.tech_stack ? `
+                        <div class="mb-2">
+                            <strong>Tech Stack:</strong>
+                            ${idea.tech_stack.map(tech => `<span class="badge bg-secondary ms-1">${tech}</span>`).join('')}
+                        </div>
+                        ` : ''}
+                        ${idea.team_roles ? `
+                        <div class="mb-2">
+                            <strong>Team Roles:</strong> ${idea.team_roles.join(', ')}
+                        </div>
+                        ` : ''}
+                        ${idea.features ? `
+                        <div>
+                            <strong>Key Features:</strong>
+                            <ul class="small mt-1">
+                                ${idea.features.slice(0, 3).map(feature => `<li>${feature}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += ideaCard;
+    });
+    
+    container.style.display = 'block';
+    defaultIdeas.style.display = 'none';
+}
+
+function generateRandomIdea() {
+    const technologies = ['web', 'mobile', 'ai', 'blockchain', 'iot', 'fintech', 'health', 'education', 'social'];
+    const randomTech = technologies[Math.floor(Math.random() * technologies.length)];
+    
+    document.getElementById('technology').value = randomTech;
+    document.getElementById('ideaForm').dispatchEvent(new Event('submit'));
+}
+</script>
+{% endblock %}

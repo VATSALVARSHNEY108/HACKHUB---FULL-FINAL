@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}Connect with Creator - HackHub{% endblock %}
+
+{% block content %}
+<div class="connect-section animated-bg">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="connect-content scroll-reveal">
+                    <h1 class="connect-title">
+                        Connect with the
+                        <span class="gradient-text gradient-text-animated text-glow">Creator</span>
+                    </h1>
+                    <p class="connect-description scroll-reveal">
+                        Hi! I'm Vatsal Varshney the creator of HackHub, passionate about building tools that help developers, designers, and innovators form amazing teams. Let's connect and build something incredible together!
+                    </p>
+
+                    <div class="creator-info scroll-reveal">
+                        <div class="info-item stagger-child">
+                            <div class="info-icon">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>About Me</h4>
+                                <p>Artificial Intelligence Developer</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item stagger-child">
+                            <div class="info-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>Vision</h4>
+                                <p>Deeply learn and Master Artificial Intelligence</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="connect-actions scroll-reveal">
+                        <a href="mailto:vatsalworkingat19@gmail.com" class="btn btn-primary btn-lg btn-magnetic hover-glow">
+                            <i class="fas fa-envelope"></i> Send Email
+                        </a>
+                        <a href="https://github.com/VATSALVARSHNEY108" target="_blank" class="btn btn-outline-light btn-lg btn-magnetic hover-lift">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://www.linkedin.com/in/vatsal-varshney108/" target="_blank" class="btn btn-outline-light btn-lg btn-magnetic hover-lift">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="connect-image scroll-reveal">
+                    <div class="creator-avatar floating-element">
+                        <img src="{{ url_for('static', filename='vatsal-photo.jpg') }}" alt="Vatsal Varshney - Creator of HackHub" class="creator-photo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contact-form-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact-form-card scroll-reveal">
+                    <div class="form-header text-center mb-4">
+                        <h2>Get in Touch</h2>
+                        <p class="lead">Have questions, suggestions, or want to collaborate? I'd love to hear from you!</p>
+                    </div>
+
+                    <form class="contact-form" action="#" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <select class="form-control" id="subject" name="subject" required>
+                                <option value="">Choose a topic...</option>
+                                <option value="feedback">Feedback on HackHub</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="collaboration">Collaboration Opportunity</option>
+                                <option value="support">Technical Support</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Tell me about your ideas, feedback, or questions..." required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="skills-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title scroll-reveal">Skills & Technologies</h2>
+                <p class="section-subtitle scroll-reveal">Technologies I use to build amazing experiences</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-card scroll-reveal stagger-child">
+                    <div class="skill-icon">
+                        <i class="fab fa-python"></i>
+                    </div>
+                    <h5>Backend</h5>
+                    <p>Python, Flask, FastAPI, PostgreSQL</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-card scroll-reveal stagger-child">
+                    <div class="skill-icon">
+                        <i class="fab fa-js-square"></i>
+                    </div>
+                    <h5>Frontend</h5>
+                    <p>JavaScript, React, Vue.js, HTML5/CSS3</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-card scroll-reveal stagger-child">
+                    <div class="skill-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h5>AI/ML</h5>
+                    <p>TensorFlow, PyTorch, OpenAI API, Gemini</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="skill-card scroll-reveal stagger-child">
+                    <div class="skill-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h5>Cloud</h5>
+                    <p>AWS, Docker, Kubernetes, CI/CD</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+/* Connect Section */
+.connect-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 120px 0 80px;
+}
+
+.connect-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+}
+
+.connect-description {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.creator-info {
+    margin-bottom: 3rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.info-icon {
+    font-size: 2.5rem;
+    margin-right: 1.5rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.info-content h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.info-content p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.connect-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.connect-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.creator-avatar {
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    position: relative;
+}
+
+.creator-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    border-radius: 50%;
+    transform: scale(1.2);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Contact Form Section */
+.contact-form-section {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.contact-form-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.form-header h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.contact-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.contact-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.contact-form .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Skills Section */
+.skills-section {
+    padding: 80px 0;
+    background: white;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 3rem;
+}
+
+.skill-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.skill-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.skill-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 1.5rem;
+}
+
+.skill-card h5 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.skill-card p {
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .connect-title {
+        font-size: 2.5rem;
+    }
+
+    .connect-description {
+        font-size: 1.1rem;
+    }
+
+    .connect-actions {
+        justify-content: center;
+    }
+
+    .creator-avatar {
+        width: 200px;
+        height: 200px;
+        font-size: 5rem;
+    }
+
+    .contact-form-card {
+        padding: 2rem;
+    }
+
+    .info-item {
+        text-align: center;
+        flex-direction: column;
+    }
+
+    .info-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}

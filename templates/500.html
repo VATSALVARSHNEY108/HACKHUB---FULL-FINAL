@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - HackHub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-page">
+                <h1 class="display-1 text-muted">500</h1>
+                <h2>Internal Server Error</h2>
+                <p class="lead">Something went wrong on our end. We're working to fix it!</p>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

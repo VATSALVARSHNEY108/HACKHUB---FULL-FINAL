@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HackHub - Intelligent Team Builder{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-code"></i>
+                <span class="brand-text">HackHub</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('simple_register') }}">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('simple_participants') }}">
+                            <i class="fas fa-users"></i> Participants
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('teams_view') }}">
+                            <i class="fas fa-people-group"></i> Teams
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('project_ideas') }}">
+                            <i class="fas fa-lightbulb"></i> Project Ideas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('hackathon_portals') }}">
+                            <i class="fas fa-globe"></i> Hackathon Portals
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('connect') }}">
+                            <i class="fas fa-heart"></i> Connect
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Layout Container -->
+    <div class="layout-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="container mt-3">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Hackathon Text and Logo -->
+            <div class="hackathon-text-container">
+                <div class="hackathon-center-text">hackathon participants working together</div>
+            </div>
+            <div class="hackathon-logo-container">
+                <img src="{{ url_for('static', filename='hackathon-logo.png') }}" alt="Hackathon" class="hackathon-center-logo">
+            </div>
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- AI Assistant Sidebar -->
+        <aside class="ai-sidebar">
+            <div class="ai-sidebar-header">
+                <div class="ai-title">
+                    <i class="fas fa-robot"></i>
+                    AI Assistant
+                </div>
+            </div>
+            
+            <div class="ai-messages" id="aiMessages">
+                <div class="ai-message">
+                    <div class="ai-content">
+                        👋 Hi! I'm your HackHub AI assistant. I can help you with team formation, project ideas, and hackathon advice. What would you like to know?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-input-container">
+                <input type="text" id="aiInput" placeholder="Ask me about teams, projects, or hackathons..." maxlength="500">
+                <button id="aiSendButton" onclick="sendAIMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-primary">
+                        <i class="fas fa-code"></i> HackHub
+                    </h5>
+                    <p class="mb-2">Intelligent Team Builder for Hackathons</p>
+                    <p class="text-muted small mb-0">
+                        Created by <strong>Vatsal Varshney</strong>, an AI/ML Developer from 
+                        Madan Mohan Malaviya University of Technology, Computer Science Engineering
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-links">
+                        <a href="{{ url_for('index') }}" class="text-muted me-3">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('simple_register') }}" class="text-muted me-3">
+                            <i class="fas fa-user-plus"></i> Join
+                        </a>
+                        <a href="{{ url_for('teams') }}" class="text-muted">
+                            <i class="fas fa-people-group"></i> Teams
+                        </a>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        © 2025 HackHub. Powered by AI.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dynamic-effects.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-assistant.js') }}"></script>
+    
+    <script>
+        // AI Assistant Functions for Sidebar
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (message) {
+                console.log('Sending AI message:', message);
+                
+                // Add user message to chat
+                addMessageToAI(message, 'user');
+                input.value = '';
+                
+                // Send to AI assistant
+                if (window.aiAssistant) {
+                    window.aiAssistant.sendMessage(message);
+                } else {
+                    // Fallback: simulate AI response
+                    setTimeout(() => {
+                        addMessageToAI('Thanks for your message! I\'m here to help with team formation and hackathon advice.', 'ai');
+                    }, 1000);
+                }
+            }
+        }
+        
+        function addMessageToAI(message, type) {
+            const messagesContainer = document.getElementById('aiMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'user' ? 'user-message' : 'ai-message';
+            messageDiv.innerHTML = `<div class="ai-content">${message}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Handle Enter key for AI input
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiInput = document.getElementById('aiInput');
+            if (aiInput) {
+                aiInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendAIMessage();
+                    }
+                });
+            }
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+    
+    <style>
+    .navbar-brand {
+        display: flex;
+        align-items: center;
+    }
+    
+    .brand-text {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    
+    .hackathon-logo-container {
+        position: fixed;
+        right: 35%;
+        top: 50%;
+        transform: translate(50%, -50%);
+        z-index: -1;
+        pointer-events: none;
+    }
+    
+    .hackathon-center-logo {
+        width: 200px;
+        height: auto;
+        opacity: 0.05;
+        border-radius: 15px;
+        transition: opacity 0.3s ease;
+    }
+    
+    .hackathon-center-logo:hover {
+        opacity: 0.1;
+    }
+    
+    .hackathon-text-container {
+        position: fixed;
+        left: 25%;
+        top: 60%;
+        transform: translate(-50%, -50%);
+        z-index: -1;
+        pointer-events: none;
+    }
+    
+    .hackathon-center-text {
+        font-size: 1.1rem;
+        color: #667eea;
+        opacity: 0.05;
+        font-weight: 300;
+        text-align: center;
+        line-height: 1.4;
+        transition: opacity 0.3s ease;
+        white-space: nowrap;
+        transform: rotate(-15deg);
+    }
+    
+    .hackathon-center-text:hover {
+        opacity: 0.1;
+    }
+    
+    /* Ensure participants section is properly visible */
+    ..-section {
+        position: relative;
+        z-index: 1;
+        background: var(--bg-primary);
+    }
+    </style>
+</body>
+</html>

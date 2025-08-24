@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Register - HackHub{% endblock %}
+
+{% block content %}
+<div class="register-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="register-card">
+                    <div class="register-header">
+                        <h2><i class="fas fa-user-plus"></i> Join HackHub</h2>
+                        <p>Tell us about yourself to get matched with the perfect team</p>
+                    </div>
+                    
+                    <form method="POST" id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                    <div class="form-text">Your display name for team formation</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <div class="form-text">We'll use this to contact you</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="role"><i class="fas fa-briefcase"></i> Primary Role</label>
+                                    <select class="form-select" id="role" name="role" required>
+                                        <option value="">Select your role...</option>
+                                        <option value="Developer">Developer</option>
+                                        <option value="Designer">Designer</option>
+                                        <option value="Product Manager">Product Manager</option>
+                                        <option value="Data Scientist">Data Scientist</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="experience_level"><i class="fas fa-star"></i> Experience Level</label>
+                                    <select class="form-select" id="experience_level" name="experience_level" required>
+                                        <option value="">Select experience...</option>
+                                        <option value="Beginner">Beginner (0-2 years)</option>
+                                        <option value="Intermediate">Intermediate (2-5 years)</option>
+                                        <option value="Advanced">Advanced (5+ years)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="skills"><i class="fas fa-code"></i> Skills & Technologies</label>
+                            <input type="text" class="form-control" id="skills" name="skills" 
+                                   placeholder="e.g., Python, React, Machine Learning, UI/UX Design">
+                            <div class="form-text">Enter your skills separated by commas</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="interests"><i class="fas fa-heart"></i> Interests & Passions</label>
+                            <input type="text" class="form-control" id="interests" name="interests" 
+                                   placeholder="e.g., FinTech, Healthcare, Gaming, Social Impact">
+                            <div class="form-text">What domains or themes excite you?</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="preferred_team_size"><i class="fas fa-users"></i> Preferred Team Size</label>
+                                    <select class="form-select" id="preferred_team_size" name="preferred_team_size">
+                                        <option value="2">2 members</option>
+                                        <option value="3">3 members</option>
+                                        <option value="4" selected>4 members</option>
+                                        <option value="5">5 members</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="availability"><i class="fas fa-clock"></i> Availability</label>
+                                    <select class="form-select" id="availability" name="availability" required>
+                                        <option value="">Select availability...</option>
+                                        <option value="Full-time">Full-time (Entire hackathon)</option>
+                                        <option value="Part-time">Part-time (Limited hours)</option>
+                                        <option value="Weekend">Weekend only</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="github_url"><i class="fab fa-github"></i> GitHub Profile (Optional)</label>
+                                    <input type="url" class="form-control" id="github_url" name="github_url" 
+                                           placeholder="https://github.com/yourusername">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="linkedin_url"><i class="fab fa-linkedin"></i> LinkedIn Profile (Optional)</label>
+                                    <input type="url" class="form-control" id="linkedin_url" name="linkedin_url" 
+                                           placeholder="https://linkedin.com/in/yourusername">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-rocket"></i> Join HackHub
+                            </button>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="register-benefits">
+                    <h3>Why Join HackHub?</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="benefit-item">
+                                <i class="fas fa-users-cog"></i>
+                                <h5>Smart Matching</h5>
+                                <p>Get paired with teammates who complement your skills</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="benefit-item">
+                                <i class="fas fa-lightbulb"></i>
+                                <h5>Project Ideas</h5>
+                                <p>AI-generated project suggestions based on your team</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="benefit-item">
+                                <i class="fas fa-trophy"></i>
+                                <h5>Win Together</h5>
+                                <p>Balanced teams have higher success rates</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const skills = document.getElementById('skills').value;
+    const interests = document.getElementById('interests').value;
+    
+    if (!skills.trim()) {
+        e.preventDefault();
+        alert('Please enter at least one skill');
+        return;
+    }
+    
+    if (!interests.trim()) {
+        e.preventDefault();
+        alert('Please enter at least one interest');
+        return;
+    }
+});
+
+// Add input validation and formatting
+document.getElementById('skills').addEventListener('input', function(e) {
+    // Format skills as user types
+    let value = e.target.value;
+    // Remove extra spaces and format commas
+    value = value.replace(/\s*,\s*/g, ', ');
+    if (e.target.value !== value) {
+        e.target.value = value;
+    }
+});
+
+document.getElementById('interests').addEventListener('input', function(e) {
+    // Format interests as user types
+    let value = e.target.value;
+    value = value.replace(/\s*,\s*/g, ', ');
+    if (e.target.value !== value) {
+        e.target.value = value;
+    }
+});
+</script>
+{% endblock %}

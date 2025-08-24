@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}Teams - HackHub{% endblock %}
+
+{% block content %}
+<div class="teams-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1><i class="fas fa-people-group"></i> Formed Teams</h1>
+                    <p class="lead">Discover the perfectly balanced teams created by our AI matching algorithm</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <button class="btn btn-primary" onclick="generateTeams()">
+                        <i class="fas fa-magic"></i> Generate New Teams
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="teams-stats">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-people-group"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ teams|length }}</h3>
+                            <p>Total Teams</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            {% set total_members = namespace(count=0) %}
+                            {% for team in teams %}
+                                {% set total_members.count = total_members.count + team.participants|length %}
+                            {% endfor %}
+                            <h3>{{ total_members.count }}</h3>
+                            <p>Team Members</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ "%.1f"|format(teams|sum(attribute='balance_score') / teams|length if teams else 0) }}</h3>
+                            <p>Avg Balance Score</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ teams|length * 25 }}%</h3>
+                            <p>Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if teams %}
+            <div class="teams-grid">
+                <div class="row g-4">
+                    {% for team in teams %}
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="team-card">
+                            <div class="team-header">
+                                <div class="team-info">
+                                    <h4>{{ team.name }}</h4>
+                                    <p class="team-description">{{ team.description }}</p>
+                                </div>
+                                <div class="team-balance">
+                                    <div class="balance-score">
+                                        <span class="score-value">{{ "%.2f"|format(team.balance_score) }}</span>
+                                        <span class="score-label">Balance</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="team-members">
+                                <h6><i class="fas fa-users"></i> Members ({{ team.participants|length }})</h6>
+                                <div class="members-list">
+                                    {% for participant in team.participants %}
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            {{ participant.name[0].upper() }}
+                                        </div>
+                                        <div class="member-info">
+                                            <div class="member-name">{{ participant.name }}</div>
+                                            <div class="member-role">{{ participant.role }}</div>
+                                            <div class="member-experience">{{ participant.experience_level }}</div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            {% if team.tech_stack %}
+                            <div class="team-tech-stack">
+                                <h6><i class="fas fa-code"></i> Suggested Tech Stack</h6>
+                                <div class="tech-tags">
+                                    {% for tech in team.tech_stack[:5] %}
+                                        <span class="tech-tag">{{ tech }}</span>
+                                    {% endfor %}
+                                    {% if team.tech_stack|length > 5 %}
+                                        <span class="tech-tag more">+{{ team.tech_stack|length - 5 }} more</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if team.project_idea %}
+                            <div class="team-project">
+                                <h6><i class="fas fa-lightbulb"></i> Project Idea</h6>
+                                <p>{{ team.project_idea }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="team-actions">
+                                <button class="btn btn-outline-primary btn-sm" onclick="getProjectIdeas('{{ team.id }}', '{{ team.name }}')">
+                                    <i class="fas fa-lightbulb"></i> Get Ideas
+                                </button>
+                                <button class="btn btn-outline-success btn-sm" onclick="analyzeTeam('{{ team.id }}', '{{ team.name }}')">
+                                    <i class="fas fa-chart-bar"></i> Analyze
+                                </button>
+                                <button class="btn btn-outline-info btn-sm" onclick="exportTeam('{{ team.id }}')">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="team-insights">
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h3 class="text-center mb-4">Team Composition Analysis</h3>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-pie"></i> Team Size Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="teamSizeChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="analytics-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-balance-scale"></i> Balance Score Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="balanceScoreChart" width="400" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-people-group"></i>
+                </div>
+                <h3>No Teams Formed Yet</h3>
+                <p>Create your first teams using our intelligent matching algorithm. Make sure you have registered participants first.</p>
+                <div class="empty-actions">
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Register Participants
+                    </a>
+                    <button class="btn btn-primary btn-lg" onclick="generateTeams()">
+                        <i class="fas fa-magic"></i> Generate Teams
+                    </button>
+                </div>
+                
+                <div class="process-preview">
+                    <h4>How Team Generation Works</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="process-step">
+                                <i class="fas fa-brain"></i>
+                                <h6>AI Analysis</h6>
+                                <p>Analyze skills, experience, and interests</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="process-step">
+                                <i class="fas fa-users-cog"></i>
+                                <h6>Smart Matching</h6>
+                                <p>Create balanced, diverse teams</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="process-step">
+                                <i class="fas fa-trophy"></i>
+                                <h6>Optimize</h6>
+                                <p>Maximize team success potential</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function getProjectIdeas(teamId, teamName) {
+    // Get team skills from the UI or make an API call
+    const message = `Can you suggest some innovative project ideas for ${teamName}? Consider their diverse skills and current tech trends.`;
+    
+    window.sendAIMessage(message, {
+        type: 'project_ideas',
+        team_id: teamId,
+        team_name: teamName
+    });
+}
+
+function analyzeTeam(teamId, teamName) {
+    const message = `Can you analyze ${teamName} and provide insights on their strengths, potential challenges, and collaboration tips?`;
+    
+    window.sendAIMessage(message, {
+        type: 'team_analysis',
+        team_id: teamId,
+        team_name: teamName
+    });
+}
+
+function exportTeam(teamId) {
+    // Simple export functionality
+    const teamCard = document.querySelector(`[data-team-id="${teamId}"]`);
+    if (teamCard) {
+        const teamData = {
+            id: teamId,
+            exported_at: new Date().toISOString()
+        };
+        
+        const dataStr = JSON.stringify(teamData, null, 2);
+        const dataBlob = new Blob([dataStr], {type: 'application/json'});
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `team-${teamId}-export.json`;
+        link.click();
+    }
+}
+
+// Load team analytics charts if teams exist
+{% if teams %}
+document.addEventListener('DOMContentLoaded', function() {
+    loadTeamAnalytics();
+});
+
+function loadTeamAnalytics() {
+    // Team size distribution
+    const teamSizes = {{ teams|map(attribute='participants')|map('length')|list|tojson }};
+    const sizeDistribution = {};
+    teamSizes.forEach(size => {
+        sizeDistribution[size] = (sizeDistribution[size] || 0) + 1;
+    });
+    
+    const teamSizeCtx = document.getElementById('teamSizeChart');
+    if (teamSizeCtx) {
+        new Chart(teamSizeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(sizeDistribution).map(size => `${size} members`),
+                datasets: [{
+                    data: Object.values(sizeDistribution),
+                    backgroundColor: [
+                        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+    
+    // Balance score distribution
+    const balanceScores = {{ teams|map(attribute='balance_score')|list|tojson }};
+    const balanceCtx = document.getElementById('balanceScoreChart');
+    if (balanceCtx) {
+        new Chart(balanceCtx, {
+            type: 'bar',
+            data: {
+                labels: balanceScores.map((_, index) => `Team ${index + 1}`),
+                datasets: [{
+                    label: 'Balance Score',
+                    data: balanceScores,
+                    backgroundColor: '#4ECDC4',
+                    borderColor: '#2ECC71',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1.0
+                    }
+                }
+            }
+        });
+    }
+}
+{% endif %}
+</script>
+{% endblock %}

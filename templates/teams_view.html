@@ -1,339 +1,248 @@
-{% extends "base.html" %}
-
-{% block title %}Teams - HackHub{% endblock %}
-
-{% block content %}
-<div class="teams-section">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Team Matching - HackHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f8f9fa; padding: 2rem 0; }
+        .team-card { background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .team-name { color: #667eea; font-weight: 600; font-size: 1.3rem; }
+        .member-card { background: #f8f9fa; border-radius: 8px; padding: 1rem; margin: 0.5rem 0; }
+        .skill-tag { background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.8rem; margin: 0.2rem; display: inline-block; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; }
+        .stats-card { background: white; border-radius: 10px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .loading-spinner { display: none; text-align: center; padding: 2rem; }
+        .balance-score { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
+    </style>
+</head>
+<body>
     <div class="container">
-        <div class="section-header">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1><i class="fas fa-people-group"></i> Formed Teams</h1>
-                    <p class="lead">Discover the perfectly balanced teams created by our AI matching algorithm</p>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <button class="btn btn-primary" onclick="generateTeams()">
-                        <i class="fas fa-magic"></i> Generate New Teams
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center mb-4"><i class="fas fa-robot"></i> AI Team Suggestions</h1>
+                <div class="text-center mb-4">
+                    <button id="suggestTeamsBtn" class="btn btn-primary btn-lg">
+                        <i class="fas fa-lightbulb"></i> Get AI Team Suggestions
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="teams-stats">
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-people-group"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>{{ teams|length }}</h3>
-                            <p>Total Teams</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-info">
-                            {% set total_members = namespace(count=0) %}
-                            {% for team in teams %}
-                                {% set total_members.count = total_members.count + team.participants|length %}
-                            {% endfor %}
-                            <h3>{{ total_members.count }}</h3>
-                            <p>Team Members</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>{{ "%.1f"|format(teams|sum(attribute='balance_score') / teams|length if teams else 0) }}</h3>
-                            <p>Avg Balance Score</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3>{{ teams|length * 25 }}%</h3>
-                            <p>Success Rate</p>
-                        </div>
+                    <div class="mt-2">
+                        <small class="text-muted">AI will analyze participants and suggest optimal team combinations</small>
                     </div>
                 </div>
             </div>
         </div>
-
-        {% if teams %}
-            <div class="teams-grid">
-                <div class="row g-4">
+        
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-spinner">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">AI is forming teams...</span>
+            </div>
+            <h5>AI is analyzing participants and generating team suggestions...</h5>
+            <p class="text-muted">This may take a few moments as we analyze skills, experience, and compatibility</p>
+        </div>
+        
+        <!-- Team Stats -->
+        <div id="teamStats" class="row mb-4" style="display: none;">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <h3 class="text-primary" id="totalTeams">0</h3>
+                    <p class="mb-0">Teams Formed</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <h3 class="text-success" id="matchedMembers">0</h3>
+                    <p class="mb-0">Members Matched</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <h3 class="text-info" id="avgBalance">0%</h3>
+                    <p class="mb-0">Avg Balance Score</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <h3 class="text-warning" id="availableParticipants">{{ available_count }}</h3>
+                    <p class="mb-0">Available to Match</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Existing Teams -->
+        <div id="teamsContainer">
+            {% if teams %}
+                <h3 class="mb-4">Current Teams</h3>
+                <div class="row">
                     {% for team in teams %}
-                    <div class="col-lg-6 col-xl-4">
+                    <div class="col-lg-6">
                         <div class="team-card">
-                            <div class="team-header">
-                                <div class="team-info">
-                                    <h4>{{ team.name }}</h4>
-                                    <p class="team-description">{{ team.description }}</p>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h4 class="team-name">{{ team.name }}</h4>
+                                    <p class="text-muted">{{ team.description or 'AI-matched team' }}</p>
                                 </div>
-                                <div class="team-balance">
-                                    <div class="balance-score">
-                                        <span class="score-value">{{ "%.2f"|format(team.balance_score) }}</span>
-                                        <span class="score-label">Balance</span>
-                                    </div>
+                                <div class="balance-score">
+                                    {{ (team.balance_score * 100) | round }}% Match
                                 </div>
                             </div>
                             
                             <div class="team-members">
-                                <h6><i class="fas fa-users"></i> Members ({{ team.participants|length }})</h6>
-                                <div class="members-list">
-                                    {% for participant in team.participants %}
-                                    <div class="member-item">
-                                        <div class="member-avatar">
-                                            {{ participant.name[0].upper() }}
+                                <h6><i class="fas fa-users"></i> Team Members ({{ team.members|length }})</h6>
+                                {% for member in team.members %}
+                                <div class="member-card">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ member.name }}</strong>
+                                            <br><small class="text-muted">{{ member.role }} - {{ member.experience_level }}</small>
+                                            <br><small><i class="fas fa-envelope"></i> {{ member.email }}</small>
                                         </div>
-                                        <div class="member-info">
-                                            <div class="member-name">{{ participant.name }}</div>
-                                            <div class="member-role">{{ participant.role }}</div>
-                                            <div class="member-experience">{{ participant.experience_level }}</div>
-                                        </div>
+                                        <span class="badge bg-secondary">{{ member.role }}</span>
                                     </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            
-                            {% if team.tech_stack %}
-                            <div class="team-tech-stack">
-                                <h6><i class="fas fa-code"></i> Suggested Tech Stack</h6>
-                                <div class="tech-tags">
-                                    {% for tech in team.tech_stack[:5] %}
-                                        <span class="tech-tag">{{ tech }}</span>
-                                    {% endfor %}
-                                    {% if team.tech_stack|length > 5 %}
-                                        <span class="tech-tag more">+{{ team.tech_stack|length - 5 }} more</span>
+                                    {% if member.skills %}
+                                    <div class="mt-2">
+                                        <strong class="small">Skills:</strong><br>
+                                        {% for skill in member.skills %}
+                                            <span class="skill-tag">{{ skill }}</span>
+                                        {% endfor %}
+                                    </div>
                                     {% endif %}
                                 </div>
+                                {% endfor %}
                             </div>
-                            {% endif %}
                             
                             {% if team.project_idea %}
-                            <div class="team-project">
-                                <h6><i class="fas fa-lightbulb"></i> Project Idea</h6>
-                                <p>{{ team.project_idea }}</p>
+                            <div class="mt-3">
+                                <h6><i class="fas fa-lightbulb"></i> Suggested Project</h6>
+                                <p class="small">{{ team.project_idea }}</p>
                             </div>
                             {% endif %}
-                            
-                            <div class="team-actions">
-                                <button class="btn btn-outline-primary btn-sm" onclick="getProjectIdeas('{{ team.id }}', '{{ team.name }}')">
-                                    <i class="fas fa-lightbulb"></i> Get Ideas
-                                </button>
-                                <button class="btn btn-outline-success btn-sm" onclick="analyzeTeam('{{ team.id }}', '{{ team.name }}')">
-                                    <i class="fas fa-chart-bar"></i> Analyze
-                                </button>
-                                <button class="btn btn-outline-info btn-sm" onclick="exportTeam('{{ team.id }}')">
-                                    <i class="fas fa-download"></i> Export
-                                </button>
-                            </div>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-            </div>
-            
-            <div class="team-insights">
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <h3 class="text-center mb-4">Team Composition Analysis</h3>
-                    </div>
+            {% else %}
+                <div id="noSuggestionsMessage" class="text-center py-5">
+                    <i class="fas fa-lightbulb fa-5x text-muted mb-3"></i>
+                    <h3>No Team Suggestions Yet</h3>
+                    <p class="text-muted">Click "Get AI Team Suggestions" to see optimal team combinations based on participant skills and experience!</p>
                 </div>
                 
-                <div class="row g-4">
-                    <div class="col-lg-6">
-                        <div class="analytics-card">
-                            <div class="card-header">
-                                <h5><i class="fas fa-chart-pie"></i> Team Size Distribution</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="teamSizeChart" width="400" height="300"></canvas>
-                            </div>
-                        </div>
+                <!-- AI Suggestions Container -->
+                <div id="suggestionsContainer" style="display: none;">
+                    <h3 class="mb-4"><i class="fas fa-robot"></i> AI Team Suggestions</h3>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> These are AI-generated suggestions based on skill compatibility, experience balance, and role diversity. Review and use them as guidance for manual team formation.
                     </div>
-                    
-                    <div class="col-lg-6">
-                        <div class="analytics-card">
-                            <div class="card-header">
-                                <h5><i class="fas fa-balance-scale"></i> Balance Score Distribution</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="balanceScoreChart" width="400" height="300"></canvas>
-                            </div>
-                        </div>
-                    </div>
+                    <div id="suggestionsList"></div>
                 </div>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-people-group"></i>
-                </div>
-                <h3>No Teams Formed Yet</h3>
-                <p>Create your first teams using our intelligent matching algorithm. Make sure you have registered participants first.</p>
-                <div class="empty-actions">
-                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-user-plus"></i> Register Participants
-                    </a>
-                    <button class="btn btn-primary btn-lg" onclick="generateTeams()">
-                        <i class="fas fa-magic"></i> Generate Teams
-                    </button>
-                </div>
-                
-                <div class="process-preview">
-                    <h4>How Team Generation Works</h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="process-step">
-                                <i class="fas fa-brain"></i>
-                                <h6>AI Analysis</h6>
-                                <p>Analyze skills, experience, and interests</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="process-step">
-                                <i class="fas fa-users-cog"></i>
-                                <h6>Smart Matching</h6>
-                                <p>Create balanced, diverse teams</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="process-step">
-                                <i class="fas fa-trophy"></i>
-                                <h6>Optimize</h6>
-                                <p>Maximize team success potential</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-function getProjectIdeas(teamId, teamName) {
-    // Get team skills from the UI or make an API call
-    const message = `Can you suggest some innovative project ideas for ${teamName}? Consider their diverse skills and current tech trends.`;
     
-    window.sendAIMessage(message, {
-        type: 'project_ideas',
-        team_id: teamId,
-        team_name: teamName
-    });
-}
-
-function analyzeTeam(teamId, teamName) {
-    const message = `Can you analyze ${teamName} and provide insights on their strengths, potential challenges, and collaboration tips?`;
-    
-    window.sendAIMessage(message, {
-        type: 'team_analysis',
-        team_id: teamId,
-        team_name: teamName
-    });
-}
-
-function exportTeam(teamId) {
-    // Simple export functionality
-    const teamCard = document.querySelector(`[data-team-id="${teamId}"]`);
-    if (teamCard) {
-        const teamData = {
-            id: teamId,
-            exported_at: new Date().toISOString()
-        };
-        
-        const dataStr = JSON.stringify(teamData, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
-        link.download = `team-${teamId}-export.json`;
-        link.click();
-    }
-}
-
-// Load team analytics charts if teams exist
-{% if teams %}
-document.addEventListener('DOMContentLoaded', function() {
-    loadTeamAnalytics();
-});
-
-function loadTeamAnalytics() {
-    // Team size distribution
-    const teamSizes = {{ teams|map(attribute='participants')|map('length')|list|tojson }};
-    const sizeDistribution = {};
-    teamSizes.forEach(size => {
-        sizeDistribution[size] = (sizeDistribution[size] || 0) + 1;
-    });
-    
-    const teamSizeCtx = document.getElementById('teamSizeChart');
-    if (teamSizeCtx) {
-        new Chart(teamSizeCtx, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(sizeDistribution).map(size => `${size} members`),
-                datasets: [{
-                    data: Object.values(sizeDistribution),
-                    backgroundColor: [
-                        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('suggestTeamsBtn').addEventListener('click', async function() {
+            const btn = this;
+            const loading = document.getElementById('loadingIndicator');
+            const container = document.getElementById('teamsContainer');
+            const stats = document.getElementById('teamStats');
+            const noTeamsMsg = document.getElementById('noTeamsMessage');
+            
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> AI is Analyzing...';
+            loading.style.display = 'block';
+            const noSuggestionsMsg = document.getElementById('noSuggestionsMessage');
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            if (noSuggestionsMsg) noSuggestionsMsg.style.display = 'none';
+            
+            try {
+                const response = await fetch('/ai-suggest-teams', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
                     }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayTeamSuggestions(result.suggestions);
+                    suggestionsContainer.style.display = 'block';
+                } else {
+                    throw new Error(result.error || 'Failed to generate suggestions');
                 }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate suggestions: ' + error.message);
+                if (noSuggestionsMsg) noSuggestionsMsg.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lightbulb"></i> Get AI Team Suggestions';
             }
         });
-    }
-    
-    // Balance score distribution
-    const balanceScores = {{ teams|map(attribute='balance_score')|list|tojson }};
-    const balanceCtx = document.getElementById('balanceScoreChart');
-    if (balanceCtx) {
-        new Chart(balanceCtx, {
-            type: 'bar',
-            data: {
-                labels: balanceScores.map((_, index) => `Team ${index + 1}`),
-                datasets: [{
-                    label: 'Balance Score',
-                    data: balanceScores,
-                    backgroundColor: '#4ECDC4',
-                    borderColor: '#2ECC71',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 1.0
-                    }
-                }
-            }
-        });
-    }
-}
-{% endif %}
-</script>
-{% endblock %}
+        
+        function displayTeamSuggestions(suggestions) {
+            const container = document.getElementById('suggestionsList');
+            container.innerHTML = '';
+            
+            suggestions.forEach((suggestion, index) => {
+                const suggestionCard = `
+                    <div class="team-card mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="team-name">Suggested Team ${index + 1}</h5>
+                                <p class="text-muted">${suggestion.reasoning}</p>
+                            </div>
+                            <div class="balance-score">
+                                ${suggestion.compatibility_score}% Compatible
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            ${suggestion.members.map(member => `
+                                <div class="col-md-6">
+                                    <div class="member-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>${member.name}</strong>
+                                                <br><small class="text-muted">${member.role} - ${member.experience_level}</small>
+                                                <br><small><i class="fas fa-envelope"></i> ${member.email}</small>
+                                            </div>
+                                            <span class="badge bg-secondary">${member.role}</span>
+                                        </div>
+                                        ${member.skills && member.skills.length > 0 ? `
+                                        <div class="mt-2">
+                                            <strong class="small">Skills:</strong><br>
+                                            ${member.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        ${suggestion.project_suggestion ? `
+                        <div class="mt-3 p-2 bg-light rounded">
+                            <h6><i class="fas fa-lightbulb"></i> AI Project Suggestion</h6>
+                            <p class="small mb-0">${suggestion.project_suggestion}</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i> This is an AI suggestion - review and manually form teams as needed
+                            </small>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += suggestionCard;
+            });
+        }
+    </script>
+</body>
+</html>

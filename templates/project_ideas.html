@@ -3,6 +3,58 @@
 {% block title %}AI Project Ideas - HackHub{% endblock %}
 
 {% block content %}
+<style>
+    /* Fixing card visibility and readability */
+    body {
+        background: #0d0d1a;
+        color: #f8f9fa;
+    }
+
+    .participants-section {
+        padding: 60px 0;
+    }
+
+    .card {
+        background: #1e1e2f; /* Slightly lighter than page background */
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-header {
+        font-weight: bold;
+        border-bottom: none;
+    }
+
+    .card-body {
+        color: #f8f9fa;
+    }
+
+    .card-text {
+        color: #f8f9fa !important; /* Force readable text */
+    }
+
+    .badge {
+        font-size: 0.8rem;
+    }
+
+    .btn-primary {
+        background: #6f42c1;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #5a32a3;
+    }
+
+    .lead {
+        color: #ddd;
+    }
+
+    label, select, input, .form-text {
+        color: #f8f9fa;
+    }
+</style>
+
 <div class="participants-section">
     <div class="container">
         <div class="section-header">
@@ -19,95 +71,8 @@
             </div>
         </div>
 
-        <!-- Project Idea Generator Form -->
-        <div class="row mb-5">
-            <div class="col-lg-8 mx-auto">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-brain"></i> Customize Your Project Ideas</h5>
-                    </div>
-                    <div class="card-body">
-                        <form id="ideaForm">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Technology Focus</label>
-                                        <select class="form-select" name="technology" id="technology">
-                                            <option value="">Any Technology</option>
-                                            <option value="web">Web Development</option>
-                                            <option value="mobile">Mobile Apps</option>
-                                            <option value="ai">AI/Machine Learning</option>
-                                            <option value="blockchain">Blockchain</option>
-                                            <option value="iot">IoT/Hardware</option>
-                                            <option value="fintech">FinTech</option>
-                                            <option value="health">HealthTech</option>
-                                            <option value="education">EdTech</option>
-                                            <option value="social">Social Impact</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Team Size</label>
-                                        <select class="form-select" name="team_size" id="team_size">
-                                            <option value="">Any Size</option>
-                                            <option value="2">2 members</option>
-                                            <option value="3">3 members</option>
-                                            <option value="4">4 members</option>
-                                            <option value="5">5+ members</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Experience Level</label>
-                                        <select class="form-select" name="experience" id="experience">
-                                            <option value="">Mixed Experience</option>
-                                            <option value="beginner">Beginner Friendly</option>
-                                            <option value="intermediate">Intermediate</option>
-                                            <option value="advanced">Advanced</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Project Duration</label>
-                                        <select class="form-select" name="duration" id="duration">
-                                            <option value="">Standard (48 hours)</option>
-                                            <option value="short">Quick Build (24 hours)</option>
-                                            <option value="weekend">Weekend Project</option>
-                                            <option value="week">Week-long</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Skills & Interests (Optional)</label>
-                                <input type="text" class="form-control" name="skills" id="skills" 
-                                       placeholder="e.g., Python, React, Design, Data Science">
-                                <div class="form-text">Enter skills and interests separated by commas</div>
-                            </div>
-                            
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary btn-lg px-5">
-                                    <i class="fas fa-magic"></i> Generate Ideas
-                                </button>
-                                <div class="mt-2">
-                                    <small class="text-muted">Powered by AI • Get 3-5 personalized project ideas</small>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Loading Indicator -->
-        <div id="loadingIndicator" class="text-center py-5" style="display: none;">
+        <div id="loadingIndicator" class="text-center py-5" style="display: flex;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Generating ideas...</span>
             </div>
@@ -115,12 +80,10 @@
         </div>
 
         <!-- Generated Ideas Display -->
-        <div id="generatedIdeas" class="row g-4">
-            <!-- Ideas will be inserted here by JavaScript -->
-        </div>
-        
+        <div id="generatedIdeas" class="row g-4"></div>
+
         <!-- Default Ideas (shown initially) -->
-        <div id="defaultIdeas" class="row g-4">
+        <div id="defaultIdeas" class="row g-4" style="display: flex">
             <div class="col-lg-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-header bg-success text-white">
@@ -135,13 +98,11 @@
                             <span class="badge bg-secondary ms-1">Node.js</span>
                             <span class="badge bg-secondary ms-1">Chart.js</span>
                         </div>
-                        <div>
-                            <strong>Team Roles:</strong> Developer, Designer, Data Analyst
-                        </div>
+                        <div><strong>Team Roles:</strong> Developer, Designer, Data Analyst</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-header bg-primary text-white">
@@ -156,13 +117,11 @@
                             <span class="badge bg-secondary ms-1">OpenAI API</span>
                             <span class="badge bg-secondary ms-1">Flask</span>
                         </div>
-                        <div>
-                            <strong>Team Roles:</strong> AI Developer, Full-stack Developer, UX Designer
-                        </div>
+                        <div><strong>Team Roles:</strong> AI Developer, Full-stack Developer, UX Designer</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
                 <div class="card h-100 shadow-sm">
                     <div class="card-header bg-warning text-dark">
@@ -177,10 +136,95 @@
                             <span class="badge bg-secondary ms-1">Firebase</span>
                             <span class="badge bg-secondary ms-1">Maps API</span>
                         </div>
-                        <div>
-                            <strong>Team Roles:</strong> Mobile Developer, Backend Developer, UI/UX Designer
-                        </div>
+                        <div><strong>Team Roles:</strong> Mobile Developer, Backend Developer, UI/UX Designer</div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Idea Generator Form -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-brain"></i> Customize Your Project Ideas</h5>
+                </div>
+                <div class="card-body">
+                    <form id="ideaForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Technology Focus</label>
+                                    <select class="form-select" name="technology" id="technology">
+                                        <option value="">Any Technology</option>
+                                        <option value="web">Web Development</option>
+                                        <option value="mobile">Mobile Apps</option>
+                                        <option value="ai">AI/Machine Learning</option>
+                                        <option value="blockchain">Blockchain</option>
+                                        <option value="iot">IoT/Hardware</option>
+                                        <option value="fintech">FinTech</option>
+                                        <option value="health">HealthTech</option>
+                                        <option value="education">EdTech</option>
+                                        <option value="social">Social Impact</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Team Size</label>
+                                    <select class="form-select" name="team_size" id="team_size">
+                                        <option value="">Any Size</option>
+                                        <option value="2">2 members</option>
+                                        <option value="3">3 members</option>
+                                        <option value="4">4 members</option>
+                                        <option value="5">5+ members</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Experience Level</label>
+                                    <select class="form-select" name="experience" id="experience">
+                                        <option value="">Mixed Experience</option>
+                                        <option value="beginner">Beginner Friendly</option>
+                                        <option value="intermediate">Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Project Duration</label>
+                                    <select class="form-select" name="duration" id="duration">
+                                        <option value="">Standard (48 hours)</option>
+                                        <option value="short">Quick Build (24 hours)</option>
+                                        <option value="weekend">Weekend Project</option>
+                                        <option value="week">Week-long</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Skills & Interests (Optional)</label>
+                            <input type="text" class="form-control" name="skills" id="skills"
+                                   placeholder="e.g., Python, React, Design, Data Science">
+                            <div class="form-text">Enter skills and interests separated by commas</div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-magic"></i> Generate Ideas
+                            </button>
+                            <div class="mt-2">
+                                <small class="text-muted">Powered by AI • Get 3-5 personalized project ideas</small>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -190,33 +234,29 @@
 <script>
 document.getElementById('ideaForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
+
     const loadingIndicator = document.getElementById('loadingIndicator');
     const generatedIdeas = document.getElementById('generatedIdeas');
     const defaultIdeas = document.getElementById('defaultIdeas');
-    
-    // Show loading
+
     loadingIndicator.style.display = 'block';
     defaultIdeas.style.display = 'none';
     generatedIdeas.innerHTML = '';
-    
-    // Gather form data
+
     const formData = new FormData(this);
     const data = Object.fromEntries(formData);
-    
+
     try {
         const response = await fetch('/generate-project-ideas', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
-            displayGeneratedIdeas(result.ideas);
+            displayGeneratedIdeas(result.ideas);a
         } else {
             throw new Error(result.error || 'Failed to generate ideas');
         }
@@ -232,13 +272,12 @@ document.getElementById('ideaForm').addEventListener('submit', async function(e)
 function displayGeneratedIdeas(ideas) {
     const container = document.getElementById('generatedIdeas');
     const defaultIdeas = document.getElementById('defaultIdeas');
-    
     container.innerHTML = '';
-    
+
     ideas.forEach((idea, index) => {
         const colors = ['primary', 'success', 'info', 'warning', 'secondary'];
         const color = colors[index % colors.length];
-        
+
         const ideaCard = `
             <div class="col-lg-4">
                 <div class="card h-100 shadow-sm">
@@ -249,31 +288,23 @@ function displayGeneratedIdeas(ideas) {
                     <div class="card-body">
                         <p class="card-text">${idea.description}</p>
                         ${idea.tech_stack ? `
-                        <div class="mb-2">
-                            <strong>Tech Stack:</strong>
+                        <div class="mb-2"><strong>Tech Stack:</strong>
                             ${idea.tech_stack.map(tech => `<span class="badge bg-secondary ms-1">${tech}</span>`).join('')}
-                        </div>
-                        ` : ''}
+                        </div>` : ''}
                         ${idea.team_roles ? `
-                        <div class="mb-2">
-                            <strong>Team Roles:</strong> ${idea.team_roles.join(', ')}
-                        </div>
-                        ` : ''}
+                        <div class="mb-2"><strong>Team Roles:</strong> ${idea.team_roles.join(', ')}</div>` : ''}
                         ${idea.features ? `
-                        <div>
-                            <strong>Key Features:</strong>
+                        <div><strong>Key Features:</strong>
                             <ul class="small mt-1">
                                 ${idea.features.slice(0, 3).map(feature => `<li>${feature}</li>`).join('')}
                             </ul>
-                        </div>
-                        ` : ''}
+                        </div>` : ''}
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
         container.innerHTML += ideaCard;
     });
-    
+
     container.style.display = 'block';
     defaultIdeas.style.display = 'none';
 }
@@ -281,7 +312,6 @@ function displayGeneratedIdeas(ideas) {
 function generateRandomIdea() {
     const technologies = ['web', 'mobile', 'ai', 'blockchain', 'iot', 'fintech', 'health', 'education', 'social'];
     const randomTech = technologies[Math.floor(Math.random() * technologies.length)];
-    
     document.getElementById('technology').value = randomTech;
     document.getElementById('ideaForm').dispatchEvent(new Event('submit'));
 }
